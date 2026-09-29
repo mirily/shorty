@@ -4,16 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
+	apphttp "github.com/mirily/shorty/internal/http"
 )
 
 func main() {
-	router := chi.NewRouter()
-
-	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, "ok")
-	})
+	router := apphttp.NewRouter()
 
 	fmt.Println("Shorty API started on :8080")
 
