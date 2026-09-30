@@ -8,7 +8,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/mirily/shorty/internal/config"
 	apphttp "github.com/mirily/shorty/internal/http"
+	"github.com/mirily/shorty/internal/http/handlers"
 	"github.com/mirily/shorty/internal/storage"
+	"github.com/mirily/shorty/internal/users"
 )
 
 func main() {
@@ -31,7 +33,11 @@ func main() {
 
 	defer db.Close()
 
-	router := apphttp.NewRouter()
+	userRepositry := users.NewRepository(db)
+	userService := users.NewService(userRepositry)
+	authHandler := handlers.NewAuthHandler((userService))
+
+	router := apphttp.NewRouter(authHandler)
 
 	fmt.Println("Shorty api started on :8080")
 
