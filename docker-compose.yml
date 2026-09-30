@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: shorty-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: shorty
+      POSTGRES_USER: shorty
+      POSTGRES_PASSWORD: shorty
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
