@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/joho/godotenv"
 	"github.com/mirily/shorty/internal/config"
 	apphttp "github.com/mirily/shorty/internal/http"
 	"github.com/mirily/shorty/internal/storage"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(".env file not found, using system environment variables")
+	}
+
 	ctx := context.Background()
 
 	cfg, err := config.Load()
