@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/mirily/shorty/internal/users"
@@ -49,11 +50,32 @@ func (h *AuthHandler) Register(
 	)
 
 	if err != nil {
-		http.Error(
-			w,
-			"failed to register user",
-			http.StatusInternalServerError,
-		)
+		switch {
+		case errors.Is(err, users.ErrInvalidEmail):
+			http.Error(
+				w,
+				"invalid email",
+				http.StatusBadRequest,
+			)
+		case errors.Is(err, users.ErrPasswordTooShort):
+			http.Error(
+				w,
+				"password must be at least 8 characters",
+				http.StatusBadRequest,
+			)
+		case errors.Is(err, users.ErrEmailAlreadyExists):
+			http.Error(
+				w,
+				"email already exists",
+				http.StatusConflict,
+			)
+		default:
+			http.Error(
+				w,
+				"failed to register user",
+				http.StatusInternalServerError,
+			)
+		}
 
 		return
 	}

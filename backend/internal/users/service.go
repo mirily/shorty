@@ -3,6 +3,8 @@ package users
 import (
 	"context"
 	"fmt"
+	"net/mail"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,6 +24,15 @@ func (s *Service) Register(
 	email string,
 	password string,
 ) (*User, error) {
+	email = strings.TrimSpace(email)
+	if _, err := mail.ParseAddress(email); err != nil {
+		return nil, ErrInvalidEmail
+	}
+
+	if len(password) < 8 {
+		return nil, ErrPasswordTooShort
+	}
+
 	passwordHash, err := bcrypt.GenerateFromPassword(
 		[]byte(password),
 		bcrypt.DefaultCost,
